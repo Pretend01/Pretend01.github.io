@@ -101,11 +101,17 @@ def decode_ws_frame(data):
         for i in range(len(payload)):
             decoded.append(payload[i] ^ mask_key[i % 4])
         
-        return decoded.decode('utf-8')
+        try:
+            return decoded.decode('utf-8')
+        except UnicodeDecodeError:
+            return None
     else:
         payload_start = mask_start
         payload = data[payload_start:payload_start+length]
-        return payload.decode('utf-8')
+        try:
+            return payload.decode('utf-8')
+        except UnicodeDecodeError:
+            return None
 
 # Handle client connections
 def handle_client(client, addr):
